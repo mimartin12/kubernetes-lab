@@ -1,0 +1,91 @@
+apiVersion: collectors.grafana.com/v1alpha1
+kind: Alloy
+metadata:
+  name: alloy
+  namespace: monitoring
+spec:
+  controller:
+    type: daemonset
+
+  alloy:
+    configMap:
+      content: |-
+
+        // ─────────────────────────────────────────
+        // Pod Log Collection → Loki
+        // ─────────────────────────────────────────
+        discovery.kubernetes "pods" {
+          role = "pod"
+        }
+
+        loki.source.kubernetes "pod_logs" {
+          targets    = discovery.kubernetes.pods.targets
+          forward_to = [loki.write.vm.receiver]
+        }
+
+        loki.write "vm" {
+          endpoint {
+            url = "http://192.168.1.200:3100/loki/api/v1/push"
+          }
+        }
+
+        // ─────────────────────────────────────────
+        // Node Metrics (Kubelet)
+        // ─────────────────────────────────────────
+        discovery.kubernetes "nodes" {
+          role = "node"
+        }
+
+        prometheus.scrape "kubelet" {
+          targets           = discovery.kubernetes.nodes.targets
+          scheme            = "https"
+          bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+          tls_config {
+            insecure_skip_verify = true
+          }
+          forward_to = [prometheus.remote_write.vm.receiver]
+        }
+
+        // ─────────────────────────────────────────
+        // Pod / Container Metrics (cAdvisor)
+        // ─────────────────────────────────────────
+        prometheus.scrape "cadvisor" {
+          targets      = discovery.kubernetes.nodes.targets
+          metrics_path = "/metrics/cadvisor"
+          scheme       = "https"
+          bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+          tls_config {
+            insecure_skip_verify = true
+          }
+          forward_to = [prometheus.remote_write.vm.receiver]
+        }
+
+        // ─────────────────────────────────────────
+        // Prometheus Remote Write → VM
+        // ─────────────────────────────────────────
+        prometheus.remote_write "vm" {
+          endpoint {
+            url = "http://192.168.1.200:9090/api/v1/write"
+          }
+        }
+
+        // ─────────────────────────────────────────
+        // NVIDIA DCGM GPU Metrics
+        // ─────────────────────────────────────────
+        discovery.kubernetes "dcgm" {
+          role = "pod"
+          namespaces {
+            names = ["monitoring"]
+          }
+          selectors {
+            role  = "pod"
+            label = "app.kubernetes.io/name=dcgm-exporter"
+          }
+        }
+
+        prometheus.scrape "dcgm" {
+          targets      = discovery.kubernetes.dcgm.targets
+          metrics_path = "/metrics"
+          forward_to   = [prometheus.remote_write.vm.receiver]
+          scrape_interval = "15s"
+        }

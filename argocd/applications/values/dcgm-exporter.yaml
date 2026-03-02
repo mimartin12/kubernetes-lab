@@ -1,0 +1,17 @@
+image:
+  repository: nvcr.io/nvidia/k8s/dcgm-exporter
+  tag: 4.5.2-4.8.1-distroless
+
+runtimeClassName: nvidia
+
+tolerations:
+  - key: nvidia.com/gpu
+    operator: Exists
+    effect: NoSchedule
+
+serviceMonitor:
+  enabled: false # Use alloy
+
+service:
+  type: ClusterIP
+  port: 9400

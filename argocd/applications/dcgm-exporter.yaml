@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dcgm-exporter
+  namespace: argocd
+  labels:
+    name: dcgm-exporter
+    stage: monitoring
+spec:
+  project: default
+  sources:
+    - repoURL: https://nvidia.github.io/dcgm-exporter/helm-charts
+      targetRevision: 3.5.0
+      chart: dcgm-exporter
+      helm:
+        valueFiles:
+          - $values/argocd/applications/values/dcgm-exporter.yaml
+        ignoreMissingValueFiles: true
+    - repoURL: https://github.com/mimartin12/kuberentes-lab
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dcgm-exporter
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
