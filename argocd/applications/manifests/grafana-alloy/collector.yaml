@@ -101,3 +101,24 @@ spec:
             url = "http://192.168.1.200:9090/api/v1/write"
           }
         }
+        
+        // ─────────────────────────────────────────
+        // NVIDIA DCGM GPU Metrics
+        // ─────────────────────────────────────────
+        discovery.kubernetes "dcgm" {
+          role = "pod"
+          namespaces {
+            names = ["dcgm-exporter"]
+          }
+          selectors {
+            role  = "pod"
+            label = "app.kubernetes.io/name=dcgm-exporter"
+          }
+        }
+
+        prometheus.scrape "dcgm" {
+          targets      = discovery.kubernetes.dcgm.targets
+          metrics_path = "/metrics"
+          forward_to   = [prometheus.remote_write.vm.receiver]
+          scrape_interval = "15s"
+        }

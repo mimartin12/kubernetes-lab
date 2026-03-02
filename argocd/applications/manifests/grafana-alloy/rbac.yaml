@@ -39,7 +39,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: alloy
-    namespace: monitoring
+    namespace: grafana-alloy-operator
 roleRef:
   kind: ClusterRole
   name: alloy
