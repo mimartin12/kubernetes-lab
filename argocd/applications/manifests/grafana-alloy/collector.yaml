@@ -1,0 +1,103 @@
+apiVersion: collectors.grafana.com/v1alpha1
+kind: Alloy
+metadata:
+  name: alloy
+  namespace: grafana-alloy-operator
+spec:
+  controller:
+    type: daemonset
+    serviceAccount:
+      name: alloy
+
+  alloy:
+    configMap:
+      content: |-
+
+        // ─────────────────────────────────────────
+        // Pod Log Collection → Loki (direct)
+        // ─────────────────────────────────────────
+        discovery.kubernetes "pods" {
+          role = "pod"
+        }
+
+        discovery.relabel "pod_logs" {
+          targets = discovery.kubernetes.pods.targets
+
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_container_name"]
+            target_label  = "container"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_node_name"]
+            target_label  = "node"
+          }
+        }
+
+        loki.source.kubernetes "pod_logs" {
+          targets    = discovery.relabel.pod_logs.output
+          forward_to = [loki.write.vm.receiver]
+        }
+
+        loki.write "vm" {
+          endpoint {
+            url = "http://192.168.1.200:3100/loki/api/v1/push"
+          }
+        }
+
+        // ─────────────────────────────────────────
+        // Node Metrics (Kubelet)
+        // ─────────────────────────────────────────
+        discovery.kubernetes "nodes" {
+          role = "node"
+        }
+
+        prometheus.scrape "kubelet" {
+          targets           = discovery.kubernetes.nodes.targets
+          scheme            = "https"
+          bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+          tls_config {
+            insecure_skip_verify = true
+          }
+          forward_to = [prometheus.remote_write.vm.receiver]
+        }
+
+        // ─────────────────────────────────────────
+        // Pod / Container Metrics (cAdvisor)
+        // ─────────────────────────────────────────
+        prometheus.scrape "cadvisor" {
+          targets      = discovery.kubernetes.nodes.targets
+          metrics_path = "/metrics/cadvisor"
+          scheme       = "https"
+          bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+          tls_config {
+            insecure_skip_verify = true
+          }
+          forward_to = [prometheus.remote_write.vm.receiver]
+        }
+
+        // ─────────────────────────────────────────
+        // Kubernetes State Metrics (kube-state-metrics)
+        // ─────────────────────────────────────────
+        prometheus.scrape "kube_state_metrics" {
+          targets = [{
+            __address__ = "kube-state-metrics.monitoring.svc:8080",
+          }]
+          forward_to = [prometheus.remote_write.vm.receiver]
+        }
+
+        // ─────────────────────────────────────────
+        // Prometheus Remote Write → VM
+        // ─────────────────────────────────────────
+        prometheus.remote_write "vm" {
+          endpoint {
+            url = "http://192.168.1.200:9090/api/v1/write"
+          }
+        }
