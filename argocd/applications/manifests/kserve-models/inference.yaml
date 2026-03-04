@@ -28,7 +28,7 @@ spec:
       volumeMounts:
         - name: dshm
           mountPath: /dev/shm
-      storageUri: "pvc://model-store-pvc/Qwen3.5-9B-Instruct"
+      storageUri: "pvc://model-store-pvc/Qwen3.5-9B"
       resources:
         limits:
           cpu: "2"
