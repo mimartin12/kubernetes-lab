@@ -15,11 +15,11 @@ spec:
       helm:
         valueFiles:
           - $values/argocd/applications/values/nvidia-device-plugin.yaml
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       ref: values
     # Additional configuration
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       path: argocd/applications/manifests/nvidia-device-plugin
   destination:

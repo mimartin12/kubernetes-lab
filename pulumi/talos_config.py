@@ -170,6 +170,7 @@ def apply_talos_config(
     node_taints: list = None,
     node_type: str = "proxmox",
     config_dependencies: list = None,
+    grow_system_disk: bool = True,
 ):
     nameservers = nameservers or ["192.168.1.1"]
     config_dependencies = config_dependencies or []
@@ -259,22 +260,52 @@ def apply_talos_config(
         if node_labels:
             patch["machine"].setdefault("nodeLabels", {})
             patch["machine"]["nodeLabels"].update(node_labels)
-
         if node_taints:
-            # Expecting list of dicts: [{"key":..., "value":..., "effect":...}, ...]
             patch["machine"]["nodeTaints"] = node_taints
-        # Note: disabling Talos extension services requires a valid schema key.
-        # We avoid adding unknown keys here to prevent config validation failures.
         if image:
             patch["machine"]["install"]["image"] = image
         return json.dumps(patch)
+    
+    def _render_model_volume_patch() -> str:
+        return json.dumps({
+            "apiVersion": "v1alpha1",
+            "kind": "UserVolumeConfig",
+            "name": "model-store",
+            "provisioning": {
+                "diskSelector": {
+                    "match": 'disk.dev_path == "/dev/sdb"'
+                },
+                "minSize": "100GB"
+            },
+            "filesystem": {
+                "type": "xfs"
+            }
+        })
 
+    def _render_volume_patch() -> str:
+        # VolumeConfig is a separate top-level document kind, not a field inside
+        # MachineConfig. It must be passed as its own patch entry.
+        return json.dumps({
+            "apiVersion": "v1alpha1",
+            "kind": "VolumeConfig",
+            "name": "EPHEMERAL",
+            "provisioning": {
+                "grow": True,
+            },
+        })
+
+    # Build list of patches - VolumeConfig is a separate document from MachineConfig
     if install_image is None:
-        network_patch = _render_machine_patch()
+        patches = [_render_machine_patch()]
     else:
-        network_patch = pulumi.Output.from_input(install_image).apply(
-            lambda image: _render_machine_patch(image)
-        )
+        patches = [
+            pulumi.Output.from_input(install_image).apply(
+                lambda image: _render_machine_patch(image)
+            )
+        ]
+
+    patches.append(_render_volume_patch())
+    patches.append(_render_model_volume_patch())
 
     # Convert secrets output to the format expected by get_configuration_output
     machine_secrets_dict = secrets.machine_secrets.apply(
@@ -303,7 +334,7 @@ def apply_talos_config(
         machine_type=role,
         cluster_endpoint=cluster_endpoint,
         machine_secrets=machine_secrets_dict,
-        config_patches=[network_patch],
+        config_patches=patches,
         kubernetes_version=kubernetes_version,
     )
 

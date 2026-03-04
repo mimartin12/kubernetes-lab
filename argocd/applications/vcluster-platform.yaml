@@ -18,11 +18,11 @@ spec:
         valueFiles:
         - $values/argocd/applications/values/vcluster-platform.yaml
         ignoreMissingValueFiles: true
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       ref: values
     # Additional configuration, such as vcluster configuration
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       path: argocd/applications/manifests/vcluster-platform
   project: default

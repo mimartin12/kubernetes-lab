@@ -15,11 +15,11 @@ spec:
       helm:
         valueFiles:
           - $values/argocd/applications/values/cilium.yaml
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       ref: values
     # Additional configuration, such as IP Pools
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       path: argocd/applications/manifests/cilium
   destination:

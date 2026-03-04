@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-store-pvc
+  namespace: kserve-test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-model-store
+  resources:
+    requests:
+      storage: 100Gi
+
+---
+
+apiVersion: "serving.kserve.io/v1alpha1"
+kind: ClusterStorageContainer
+metadata:
+  name: hf-pvc-cached
+spec:
+  container:
+    name: storage-initializer
+    image: kserve/storage-initializer:latest
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: "1"
+      limits:
+        memory: 4Gi
+        cpu: "1"
+  supportedUriFormats:
+    - prefix: "hf://"

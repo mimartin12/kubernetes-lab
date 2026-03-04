@@ -16,10 +16,10 @@ spec:
         valueFiles:
           - $values/argocd/applications/values/grafana-alloy-operator.yaml
         ignoreMissingValueFiles: true
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       ref: values
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       path: argocd/applications/manifests/grafana-alloy
   destination:

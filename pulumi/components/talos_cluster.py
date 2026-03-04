@@ -112,6 +112,7 @@ class TalosCluster(pulumi.ComponentResource):
                     cpu=node_config.get("cpu", 2),
                     memory=node_config.get("memory", 2048),
                     install_disk=node_config.get("install_disk", "/dev/sda"),
+                    disks=node_config.get("disks", []),
                     machine=node_config.get("machine", "q35"),
                     pcie_devices=node_config.get("pcie_devices", []),
                     node_labels=node_config.get("labels", {}),

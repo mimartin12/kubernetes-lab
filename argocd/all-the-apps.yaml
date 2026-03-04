@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/mimartin12/kuberentes-lab.git
+    repoURL: https://github.com/mimartin12/kubernetes-lab.git
     targetRevision: HEAD
     path: argocd/applications
   destination:

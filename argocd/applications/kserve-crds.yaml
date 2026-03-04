@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: knative-crds
+  name: kserve-crds
   namespace: argocd
   labels:
-    name: argocd
+    name: kserve-crds
     stage: ai
 spec:
   project: default

@@ -1,0 +1,26 @@
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "qwen-llm"
+  namespace: kserve-test
+spec:
+  predictor:
+    runtimeClassName: nvidia
+    model:
+      modelFormat:
+        name: huggingface
+      args:
+        - --model_name=qwen
+        - --served-model-name=qwen
+        - --enforce-eager
+        - --max-model-len=4096
+      storageUri: "pvc://model-store-pvc/Qwen2.5-0.5B-Instruct"
+      resources:
+        limits:
+          cpu: "2"
+          memory: 5Gi
+          nvidia.com/gpu: "1"
+        requests:
+          cpu: "1"
+          memory: 4Gi
+          nvidia.com/gpu: "1"

@@ -4,7 +4,7 @@ metadata:
   name: kserve
   namespace: argocd
   labels:
-    name: argocd
+    name: kserve
     stage: ai
 spec:
   project: default
@@ -16,7 +16,7 @@ spec:
         valueFiles:
           - $values/argocd/applications/values/kserve.yaml
         ignoreMissingValueFiles: true
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       ref: values
   destination:

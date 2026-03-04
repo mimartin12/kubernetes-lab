@@ -16,7 +16,7 @@ spec:
         valueFiles:
           - $values/argocd/applications/values/dcgm-exporter.yaml
         ignoreMissingValueFiles: true
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       ref: values
   destination:

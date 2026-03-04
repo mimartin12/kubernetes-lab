@@ -15,7 +15,7 @@ spec:
       helm:
         valueFiles:
           - $values/argocd/applications/values/argocd.yaml
-    - repoURL: https://github.com/mimartin12/kuberentes-lab
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       ref: values
   destination:

@@ -7,7 +7,7 @@ configs:
     server.insecure: true
   repositories:
     kubernetes-lab-repo:
-      url: https://github.com/mimartin12/kuberentes-lab
+      url: https://github.com/mimartin12/kubernetes-lab
       name: kubernetes-lab
       type: git
 server:

@@ -88,7 +88,7 @@ spec:
         // ─────────────────────────────────────────
         prometheus.scrape "kube_state_metrics" {
           targets = [{
-            __address__ = "kube-state-metrics.monitoring.svc:8080",
+            __address__ = "kube-state-metrics.kube-state-metrics.svc:8080",
           }]
           forward_to = [prometheus.remote_write.vm.receiver]
         }

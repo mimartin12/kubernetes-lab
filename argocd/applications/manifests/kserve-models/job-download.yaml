@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: download-qwen3-5-9b-v2
+  namespace: kserve-test
+spec:
+  template:
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-worker-01
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+      containers:
+      - name: downloader
+        image: python:3.11-slim
+        command:
+          - /bin/sh
+          - -c
+          - |
+            pip install -q huggingface_hub &&
+            python -c "
+            from huggingface_hub import snapshot_download
+            snapshot_download(
+              repo_id='Qwen/Qwen3.5-9B',
+              local_dir='/mnt/models/Qwen3.5-9B',
+              ignore_patterns=['*.pt']
+            )
+            "
+        volumeMounts:
+        - name: model-store
+          mountPath: /mnt/models
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+      volumes:
+      - name: model-store
+        persistentVolumeClaim:
+          claimName: model-store-pvc
+      restartPolicy: Never
+  backoffLimit: 2

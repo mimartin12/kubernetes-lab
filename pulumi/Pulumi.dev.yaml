@@ -27,23 +27,33 @@ config:
       ip: "192.168.1.162"
       role: worker
       cpu: 2
-      memory: 4096
+      memory: 8192
       talosImage: gpu
+      install_disk: "/dev/sda"
+      disks:
+        - device: "/dev/sda"
+          size: 40
+          datastore_id: "local-lvm"
+        - device: "/dev/sdb"
+          size: 200
+          datastore_id: "ssd-model-store01"
       pcie_devices:
         - "gpu"
         - "gpuaudio"
+      labels:
+        model-store: "true"
     - name: talos-worker-02
       ip: "192.168.1.163"
       role: worker
       cpu: 2
       memory: 4096
     # External Nodes
-    - name: talos-worker-micro-01
-      ip: "192.168.1.167"
-      role: worker
-      type: external
-      install_disk: "/dev/mmcblk0"
-      talosImage: no-qemu
-      labels:
-        node.kubernetes.io/instance-type: "micro"
-        node.kubernetes.io/zone: "3d-printer"
+    # - name: talos-worker-micro-01
+    #   ip: "192.168.1.167"
+    #   role: worker
+    #   type: external
+    #   install_disk: "/dev/mmcblk0"
+    #   talosImage: no-qemu
+    #   labels:
+    #     node.kubernetes.io/instance-type: "micro"
+    #     node.kubernetes.io/zone: "3d-printer"

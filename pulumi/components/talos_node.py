@@ -24,6 +24,7 @@ class TalosNodeArgs:
         cpu: int = 2,
         memory: int = 2048,
         install_disk: str = "/dev/sda",
+        disks: list = None,
         machine: str = "q35",
         pcie_devices: list = None,
         node_labels: dict = None,
@@ -48,6 +49,7 @@ class TalosNodeArgs:
         self.cpu = cpu
         self.memory = memory
         self.machine = machine
+        self.disks = disks or []
         self.pcie_devices = pcie_devices or []
         self.node_labels = node_labels or {}
         self.node_taints = node_taints or []
@@ -170,12 +172,18 @@ class TalosNode(pulumi.ComponentResource):
                 type="host",
             ),
             disks=[
+                # proxmoxve.vm.VirtualMachineDiskArgs(
+                #     interface="scsi0",
+                #     size=20,
+                #     datastore_id="local-lvm",
+                #     file_format="raw",
+                # ),
                 proxmoxve.vm.VirtualMachineDiskArgs(
-                    interface="scsi0",
-                    size=20,
-                    datastore_id="local-lvm",
-                    file_format="raw",
-                ),
+                    interface=f"scsi{disk_idx}",
+                    size=int(disk.get("size", 20)),
+                    datastore_id=disk.get("datastore_id", "local-lvm"),
+                    file_format=disk.get("file_format", "raw"),
+                ) for disk_idx, disk in enumerate(args.disks)
             ],
             memory=proxmoxve.vm.VirtualMachineMemoryArgs(dedicated=args.memory),
             network_devices=[

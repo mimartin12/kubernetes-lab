@@ -9,7 +9,7 @@ metadata:
 spec:
   project: default
   sources:
-  - repoURL: https://github.com/mimartin12/kuberentes-lab
+  - repoURL: https://github.com/mimartin12/kubernetes-lab
     targetRevision: HEAD
     path: argocd/applications/manifests/octoprint
   destination:
