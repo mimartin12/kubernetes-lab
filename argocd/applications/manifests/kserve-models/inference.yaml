@@ -27,7 +27,9 @@ spec:
       volumeMounts:
         - name: dshm
           mountPath: /dev/shm
-      storageUri: "pvc://model-store-pvc/Qwen3.5-4B"
+      # TODO: Switch back when KServe supports qwen3_5 arch
+      # storageUri: "pvc://model-store-pvc/Qwen3.5-4B"
+      storageUri: "pvc://model-store-pvc/Qwen3-4B"
       resources:
         limits:
           cpu: "2"
