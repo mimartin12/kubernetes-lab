@@ -9,7 +9,7 @@ spec:
   storageClassName: local-model-store
   resources:
     requests:
-      storage: 100Gi
+      storage: 200Gi
 
 ---
 
@@ -20,7 +20,7 @@ metadata:
 spec:
   container:
     name: storage-initializer
-    image: kserve/storage-initializer:latest
+    image: kserve/storage-initializer:v0.16.0
     resources:
       requests:
         memory: 2Gi

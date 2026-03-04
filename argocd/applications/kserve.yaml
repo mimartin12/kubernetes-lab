@@ -19,6 +19,9 @@ spec:
     - repoURL: https://github.com/mimartin12/kubernetes-lab
       targetRevision: HEAD
       ref: values
+    - repoURL: https://github.com/mimartin12/kubernetes-lab
+      targetRevision: HEAD
+      path: argocd/applications/manifests/kserve-models
   destination:
     server: https://kubernetes.default.svc
     namespace: kserve

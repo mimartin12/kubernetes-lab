@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: download-qwen3-5-9b-v2
+  name: download-qwen3-8b
   namespace: kserve-test
 spec:
   template:
@@ -14,27 +14,23 @@ spec:
           effect: NoSchedule
       containers:
       - name: downloader
-        image: python:3.11-slim
-        command:
-          - /bin/sh
-          - -c
-          - |
-            pip install -q huggingface_hub &&
-            python -c "
-            from huggingface_hub import snapshot_download
-            snapshot_download(
-              repo_id='Qwen/Qwen3.5-9B',
-              local_dir='/mnt/models/Qwen3.5-9B',
-              ignore_patterns=['*.pt']
-            )
-            "
+        image: kserve/storage-initializer:v0.16.0
+        args:
+          - "hf://Qwen/Qwen3-8B"
+          - "/mnt/models/Qwen3-8B"
+        env:
+          - name: HF_HUB_CACHE
+            value: "/mnt/models/.cache"
         volumeMounts:
         - name: model-store
           mountPath: /mnt/models
         resources:
           requests:
-            memory: 512Mi
-            cpu: 250m
+            memory: 1Gi
+            cpu: 500m
+          limits:
+            memory: 2Gi
+            cpu: "1"
       volumes:
       - name: model-store
         persistentVolumeClaim:

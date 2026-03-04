@@ -5,6 +5,10 @@ metadata:
   namespace: kserve-test
 spec:
   predictor:
+    tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
     runtimeClassName: nvidia
     model:
       modelFormat:
@@ -12,15 +16,14 @@ spec:
       args:
         - --model_name=qwen
         - --served-model-name=qwen
-        - --enforce-eager
         - --max-model-len=4096
-      storageUri: "pvc://model-store-pvc/Qwen2.5-0.5B-Instruct"
+      storageUri: "pvc://model-store-pvc/Qwen3-8B"
       resources:
         limits:
           cpu: "2"
-          memory: 5Gi
+          memory: 8Gi
           nvidia.com/gpu: "1"
         requests:
           cpu: "1"
-          memory: 4Gi
+          memory: 6Gi
           nvidia.com/gpu: "1"
