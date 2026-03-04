@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: download-qwen3-8b
+  name: download-qwen3-5-9b
   namespace: kserve-test
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -30,8 +30,8 @@ spec:
             python -c "
             from huggingface_hub import snapshot_download
             snapshot_download(
-              repo_id='Qwen/Qwen3-8B',
-              local_dir='/mnt/models/Qwen3-8B',
+              repo_id='Qwen/Qwen3.5-9B-Instruct',
+              local_dir='/mnt/models/Qwen3.5-9B-Instruct',
               ignore_patterns=['*.pt']
             )
             "

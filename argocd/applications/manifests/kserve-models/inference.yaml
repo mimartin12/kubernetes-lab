@@ -19,7 +19,8 @@ spec:
         - --model_name=qwen
         - --served-model-name=qwen
         - --max-model-len=4096
-      storageUri: "pvc://model-store-pvc/Qwen3-8B"
+        - --quantization=fp8
+      storageUri: "pvc://model-store-pvc/Qwen3.5-9B-Instruct"
       resources:
         limits:
           cpu: "2"
