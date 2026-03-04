@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: download-llama
+  name: download-mistral
   namespace: kserve-test
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -30,8 +30,8 @@ spec:
             python -c "
             from huggingface_hub import snapshot_download
             snapshot_download(
-              repo_id='meta-llama/Llama-3.1-8B-Instruct',
-              local_dir='/mnt/models/Llama-3.1-8B-Instruct',
+              repo_id='mistralai/Mistral-7B-Instruct-v0.1',
+              local_dir='/mnt/models/Mistral-7B-Instruct-v0.1',
               ignore_patterns=['*.pt', 'original/*']
             )
             "
