@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: model-store-pvc
   namespace: kserve-test
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   accessModes:
     - ReadWriteOnce

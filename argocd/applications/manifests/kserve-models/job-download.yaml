@@ -4,6 +4,9 @@ metadata:
   name: download-qwen3-8b
   namespace: kserve-test
   annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
     argocd.argoproj.io/sync-options: Force=true,Replace=true
 spec:
   template:
@@ -18,13 +21,20 @@ spec:
         runAsUser: 0
       containers:
       - name: downloader
-        image: kserve/storage-initializer:v0.16.0
-        args:
-          - "hf://Qwen/Qwen3-8B"
-          - "/mnt/models/Qwen3-8B"
+        image: python:3.11-slim
+        command:
+          - /bin/sh
+          - -c
+          - |
+            pip install -q huggingface_hub hf_transfer &&
+            huggingface-cli download Qwen/Qwen3-8B \
+              --local-dir /mnt/models/Qwen3-8B \
+              --exclude "*.pt"
         env:
           - name: HF_HUB_CACHE
             value: "/mnt/models/.cache"
+          - name: HF_HUB_ENABLE_HF_TRANSFER
+            value: "1"
         volumeMounts:
         - name: model-store
           mountPath: /mnt/models
@@ -37,4 +47,4 @@ spec:
         persistentVolumeClaim:
           claimName: model-store-pvc
       restartPolicy: Never
-  backoffLimit: 2
+  backoffLimit: 5

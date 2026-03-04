@@ -3,6 +3,8 @@ kind: "InferenceService"
 metadata:
   name: "qwen-llm"
   namespace: kserve-test
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   predictor:
     tolerations:
