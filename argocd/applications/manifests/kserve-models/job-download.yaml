@@ -12,6 +12,8 @@ spec:
         - key: nvidia.com/gpu
           operator: Exists
           effect: NoSchedule
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: downloader
         image: kserve/storage-initializer:v0.16.0
