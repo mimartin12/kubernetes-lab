@@ -23,7 +23,7 @@ spec:
       args:
         - --model_name=qwen-coder
         - --served-model-name=qwen-coder
-        - --max-model-len=65536
+        - --max-model-len=32768
       volumeMounts:
         - name: dshm
           mountPath: /dev/shm
