@@ -1,7 +1,7 @@
 apiVersion: "serving.kserve.io/v1beta1"
 kind: "InferenceService"
 metadata:
-  name: "phi3"
+  name: "qwen-coder"
   namespace: kserve-test
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -21,13 +21,13 @@ spec:
       modelFormat:
         name: huggingface
       args:
-        - --model_name=phi3
-        - --served-model-name=phi3
-        - --max-model-len=8192
+        - --model_name=qwen-coder
+        - --served-model-name=qwen-coder
+        - --max-model-len=65536
       volumeMounts:
         - name: dshm
           mountPath: /dev/shm
-      storageUri: "pvc://model-store-pvc/Phi-3-mini-4k-instruct"
+      storageUri: "pvc://qwen-coder-pvc/Qwen2.5-Coder-3B-Instruct"
       resources:
         limits:
           cpu: "4"
@@ -35,5 +35,5 @@ spec:
           nvidia.com/gpu: "1"
         requests:
           cpu: "1"
-          memory: 6Gi
+          memory: 5Gi
           nvidia.com/gpu: "1"

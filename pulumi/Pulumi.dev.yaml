@@ -35,7 +35,7 @@ config:
           size: 40
           datastore_id: "local-lvm"
         - device: "/dev/sdb"
-          size: 200
+          size: 300
           datastore_id: "ssd-model-store01"
       pcie_devices:
         - "gpu"

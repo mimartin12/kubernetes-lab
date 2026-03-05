@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kserve-models
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - model: Qwen2.5-Coder-3B-Instruct
+  template:
+    metadata:
+      name: '{{.model | normalize }}-kserve'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/micaiah/kuberentes-lab.git
+        targetRevision: HEAD
+        path: argocd/applications/manifests/kserve-models/{{.model | normalize }}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: kserve-test
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

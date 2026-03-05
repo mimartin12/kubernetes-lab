@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: download-phi3
+  name: download-qwen-coder
   namespace: kserve-test
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -30,8 +30,8 @@ spec:
             python -c "
             from huggingface_hub import snapshot_download
             snapshot_download(
-              repo_id='microsoft/Phi-3-mini-4k-instruct',
-              local_dir='/mnt/models/Phi-3-mini-4k-instruct',
+              repo_id='Qwen/Qwen2.5-Coder-3B-Instruct',
+              local_dir='/mnt/models/Qwen2.5-Coder-3B-Instruct',
               ignore_patterns=['*.pt', 'original/*']
             )
             "
@@ -50,6 +50,6 @@ spec:
       volumes:
       - name: model-store
         persistentVolumeClaim:
-          claimName: model-store-pvc
+          claimName: qwen-coder-pvc
       restartPolicy: Never
   backoffLimit: 5
