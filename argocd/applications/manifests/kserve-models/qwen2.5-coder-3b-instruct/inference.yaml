@@ -27,7 +27,7 @@ spec:
       volumeMounts:
         - name: dshm
           mountPath: /dev/shm
-      storageUri: "pvc://qwen-coder-pvc/Qwen2.5-Coder-3B-Instruct"
+      storageUri: "pvc://qwen-coder-pvc/qwen-coder/Qwen2.5-Coder-3B-Instruct"
       resources:
         limits:
           cpu: "4"

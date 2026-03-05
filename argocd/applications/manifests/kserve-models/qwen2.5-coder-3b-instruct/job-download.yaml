@@ -19,22 +19,6 @@ spec:
           effect: NoSchedule
       securityContext:
         runAsUser: 0
-      hostPID: true
-      initContainers:
-      - name: setup-storage
-        image: busybox
-        command:
-          - sh
-          - -c
-          - |
-            mkdir -p /host/var/mnt/qwen-coder-store
-            chmod 755 /host/var/mnt/qwen-coder-store
-            echo "Storage directory created"
-        volumeMounts:
-        - name: host-root
-          mountPath: /host
-        securityContext:
-          privileged: true
       containers:
       - name: downloader
         image: python:3.11-slim
@@ -47,7 +31,7 @@ spec:
             from huggingface_hub import snapshot_download
             snapshot_download(
               repo_id='Qwen/Qwen2.5-Coder-3B-Instruct',
-              local_dir='/mnt/models/Qwen2.5-Coder-3B-Instruct',
+              local_dir='/mnt/models/qwen-coder/Qwen2.5-Coder-3B-Instruct',
               ignore_patterns=['*.pt', 'original/*']
             )
             "
@@ -67,8 +51,5 @@ spec:
       - name: model-store
         persistentVolumeClaim:
           claimName: qwen-coder-pvc
-      - name: host-root
-        hostPath:
-          path: /
       restartPolicy: Never
   backoffLimit: 5

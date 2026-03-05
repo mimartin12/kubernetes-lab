@@ -12,7 +12,7 @@ spec:
   storageClassName: local-model-store
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /var/mnt/qwen-coder-store
+    path: /var/mnt/model-store
   nodeAffinity:
     required:
       nodeSelectorTerms:
