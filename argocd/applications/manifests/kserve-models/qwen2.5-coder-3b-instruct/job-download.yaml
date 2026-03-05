@@ -19,6 +19,22 @@ spec:
           effect: NoSchedule
       securityContext:
         runAsUser: 0
+      hostPID: true
+      initContainers:
+      - name: setup-storage
+        image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            mkdir -p /host/var/mnt/qwen-coder-store
+            chmod 755 /host/var/mnt/qwen-coder-store
+            echo "Storage directory created"
+        volumeMounts:
+        - name: host-root
+          mountPath: /host
+        securityContext:
+          privileged: true
       containers:
       - name: downloader
         image: python:3.11-slim
@@ -51,5 +67,8 @@ spec:
       - name: model-store
         persistentVolumeClaim:
           claimName: qwen-coder-pvc
+      - name: host-root
+        hostPath:
+          path: /
       restartPolicy: Never
   backoffLimit: 5
