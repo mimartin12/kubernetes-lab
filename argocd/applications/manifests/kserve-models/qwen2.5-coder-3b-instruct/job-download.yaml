@@ -19,6 +19,18 @@ spec:
           effect: NoSchedule
       securityContext:
         runAsUser: 0
+      initContainers:
+      - name: setup-directory  
+        image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            mkdir -p /mnt/models
+            echo "Directory ready"
+        volumeMounts:
+        - name: model-store
+          mountPath: /mnt/models
       containers:
       - name: downloader
         image: python:3.11-slim

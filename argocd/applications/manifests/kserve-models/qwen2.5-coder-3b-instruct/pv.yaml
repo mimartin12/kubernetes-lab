@@ -11,7 +11,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   local:
-    path: /var/mnt/model-store
+    path: /var/mnt/model-store/qwen-coder
   nodeAffinity:
     required:
       nodeSelectorTerms:
