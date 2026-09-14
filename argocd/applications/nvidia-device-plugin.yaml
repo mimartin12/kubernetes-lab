@@ -10,7 +10,7 @@ spec:
   project: default
   sources:
     - repoURL: https://nvidia.github.io/k8s-device-plugin
-      targetRevision: 0.19.3
+      targetRevision: 0.20.0
       chart: nvidia-device-plugin
       helm:
         valueFiles:
