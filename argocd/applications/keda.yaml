@@ -17,7 +17,7 @@ spec:
           - $values/argocd/applications/values/keda.yaml
         ignoreMissingValueFiles: true
     - repoURL: https://kedacore.github.io/charts
-      targetRevision: 0.15.0
+      targetRevision: 0.16.0
       chart: keda-add-ons-http
       helm:
         valueFiles:
