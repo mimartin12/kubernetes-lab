@@ -10,7 +10,7 @@ spec:
   project: default
   sources:
     - repoURL: https://kedacore.github.io/charts
-      targetRevision: 2.20.1
+      targetRevision: 2.21.0
       chart: keda
       helm:
         valueFiles:
